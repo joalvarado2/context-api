@@ -1,64 +1,76 @@
-import React, {useContext, useState} from 'react'
-import { CategoriasContext } from '../context/CategoriaContext'
+import React, { useContext, useState } from "react";
+import { CategoriasContext } from "../context/CategoriaContext";
+import { RecetasContext } from "../context/RecetasContext";
 
 const Formulario = () => {
+  const [busqueda, setBusqueda] = useState({
+    nombre: "",
+    categoria: "",
+  });
 
-    const [busqueda, setBusqueda] = useState({
-        nombre: "",
-        categoria:""
+  const { categorias } = useContext(CategoriasContext);
+  // console.log(categorias);
+
+  const { setBuscarRecetas, setConsultar } = useContext(RecetasContext);
+
+  // funcion para leer los contenidos
+  const obtenerDatosReceta = (e) => {
+    setBusqueda({
+      ...busqueda,
+      [e.target.name]: e.target.value,
     });
+  };
 
-    const {categorias} = useContext(CategoriasContext);
-    console.log(categorias);
+  // funcion para guardar los datos al darle submit
+  const guardarDatos = (e) => {
+    e.preventDefault();
+    setBuscarRecetas({ busqueda });
+    setConsultar(true);
+  };
 
-    // funcion para leer los contenidos
-    const obtenerDatosReceta = (e) => {
-        setBusqueda({
-            ...busqueda,
-            [e.target.name] : e.target.value
-        })
-    }
+  return (
+    <form className="col-12" onSubmit={guardarDatos}>
+      <fieldset className="text-center">
+        <legend>Busca bebidas por categoria o ingrediente</legend>
+      </fieldset>
 
-    return (
-        <form 
-            className="col-12"
-        >
-            <fieldset className="text-center">
-                <legend>Busca bebidas por categoria o ingrediente</legend>
-            </fieldset>
+      <div className="row mt-4">
+        <div className="col-md-4">
+          <input
+            name="nombre"
+            className="form-control"
+            type="text"
+            placeholder="busca un ingrediente"
+            onChange={obtenerDatosReceta}
+          />
+        </div>
 
-            <div className="row mt-4">
-                <div className="col-md-4">
-                    <input
-                        name="nombre"
-                        className="form-control"
-                        type="text"
-                        placeholder="busca un ingrediente"
-                        onChange={obtenerDatosReceta}
-                    />
-                </div>
-                <div className="col-md-4">
-                    <select className="form-control" name="categoria">
-                    <option value="">-- Seleccione categoria --</option>
-                    {categorias.map(categoria => (
-                        <option
-                            key={categoria.idDrink}
-                            value={categoria.strDrink}
-                        >{categoria.strDrink}</option>
-                    ))}
-                    </select>
-                </div>
-                <div className="col-md-4">
-                    <input
-                        type="submit"
-                        className="btn btn-block btn-primary"
-                        value="Buscar Bebidas"
-                        onChange={obtenerDatosReceta}
-                    />
-                </div>
-            </div>
-        </form>
-    )
-}
+        <div className="col-md-4">
+          <select
+            className="form-control"
+            name="categoria"
+            onChange={obtenerDatosReceta}
+          >
+            <option value="">-- Selecciona Categoría --</option>
+            {categorias.map((categoria) => (
+              <option key={categoria.strCategory} value={categoria.strCategory}>
+                {categoria.strCategory}
+              </option>
+            ))}
+          </select>
+        </div>
 
-export default Formulario
+        <div className="col-md-4">
+          <input
+            type="submit"
+            className="btn btn-block btn-primary"
+            value="Buscar Bebidas"
+            onChange={obtenerDatosReceta}
+          />
+        </div>
+      </div>
+    </form>
+  );
+};
+
+export default Formulario;
